@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'buy.dart';
 import 'myProfile.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -112,6 +112,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onTap: (){
                     print("Tapped");
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (BuildContext context){
+                          return buy();
+                        }
+                    ));
                   },
                 ),
                 Container(
@@ -217,16 +222,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 'Email' : account.email,
                 'Username' : account.displayName,
                 'Password' : 'Null',
-                'Location' : 'Null',
+                'Address' : 'Null',
+                'City' : 'Null',
                 'Verified' : 'No'
               }
           );
           currentUserData.Password = 'Null';
-          currentUserData.location = 'Null';
+          currentUserData.city = 'Null';
+          currentUserData.address = 'Null';
         }
         else{
           currentUserData.Password = snapshot.value[account.displayName]['Password'];
-          currentUserData.location = snapshot.value[account.displayName]['Location'];
+          currentUserData.city = snapshot.value[account.displayName]['City'];
+          currentUserData.address = snapshot.value[account.displayName]['Address'];
         }
 
       });

@@ -14,7 +14,8 @@ class _SignUpState extends State<SignUp> {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailIdController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -32,7 +33,7 @@ class _SignUpState extends State<SignUp> {
           Container(
               height: heightScreen * 0.1,
               decoration: BoxDecoration(
-                  color: Color(0xFF536DFE),
+                  color: Color(0xFF3CB371),
                   borderRadius: BorderRadius.only(
                       bottomRight: Radius.circular(50.00),
                       bottomLeft: Radius.circular(50.00)
@@ -75,7 +76,7 @@ class _SignUpState extends State<SignUp> {
                         hintText: 'Enter your username',
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFF536DFE))
+                            borderSide: BorderSide(color: Color(0xFF3CB371),)
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0))
@@ -100,7 +101,7 @@ class _SignUpState extends State<SignUp> {
                         hintText: 'Enter your Email ID',
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFF536DFE))
+                            borderSide: BorderSide(color: Color(0xFF3CB371),)
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0))
@@ -126,33 +127,61 @@ class _SignUpState extends State<SignUp> {
                         hintText: 'Enter your password',
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide(color: Color(0xFF536DFE))
+                          borderSide: BorderSide(color: Color(0xFF3CB371),)
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           borderSide: BorderSide(
-                            color: Color(0xFF536DFE)
+                            color: Color(0xFF3CB371),
                           )
                         )
                     ),
                   ),
+                  Container(
+                    height: 20.0,
+                  ),
                   TextFormField(
                     keyboardType: TextInputType.text,
-                    controller: locationController,
+                    controller: addressController,
                     validator: (String value){
                       if(value.isEmpty){
-                        return 'Enter Your Location';
+                        return 'Enter Your Address';
                       }
                       else{
                         return null;
                       }
                     },
                     decoration: InputDecoration(
-                        labelText: 'Location',
-                        hintText: 'Enter your current location',
+                        labelText: 'Address',
+                        hintText: 'Enter your current address',
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: Color(0xFF536DFE))
+                            borderSide: BorderSide(color: Color(0xFF3CB371),)
+                        ),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))
+                    ),
+                  ),
+                  Container(
+                    height: 20.0,
+                  ),
+                  TextFormField(
+                    keyboardType: TextInputType.text,
+                    controller: cityController,
+                    validator: (String value){
+                      if(value.isEmpty){
+                        return 'Enter Your City';
+                      }
+                      else{
+                        return null;
+                      }
+                    },
+                    decoration: InputDecoration(
+                        labelText: 'City',
+                        hintText: 'Enter your current city',
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Color(0xFF3CB371),)
                         ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0))
@@ -165,7 +194,7 @@ class _SignUpState extends State<SignUp> {
                     children: <Widget>[
                       RaisedButton(
                         child: Text('Go Back', style: TextStyle(color: Colors.white),),
-                        color: Color(0xFF536DFE),
+                        color: Color(0xFF3CB371),
                         onPressed: (){
                           Navigator.push(context, MaterialPageRoute(
                               builder: (context) => LoginScreen()
@@ -177,7 +206,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       RaisedButton(
                         child: Text('Submit', style: TextStyle(color: Colors.white),),
-                        color: Color(0xFF536DFE),
+                        color: Color(0xFF3CB371),
                         onPressed: (){
                           final dbRefUser = FirebaseDatabase.instance.reference().child("User");
                           dbRefUser.once().then((DataSnapshot snapshot) {
@@ -189,7 +218,8 @@ class _SignUpState extends State<SignUp> {
                                     'Email' : emailIdController.text,
                                     'Password' : passwordController.text,
                                     'Username' : userNameController.text,
-                                    'Location' : locationController.text,
+                                    'Address' : addressController.text,
+                                    'City' : cityController.text,
                                     'Verified' : 'No'
                                   }
                               );

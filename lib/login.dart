@@ -224,11 +224,12 @@ class _LoginScreenState extends State<LoginScreen> {
             print("Access granted");
             print(i["Username"]);
             logIn = true;
-            showSnackBar("Log In Successfull");
+            showSnackBar("Log In Successfully");
             currentUserData.EmailID = i['Email'];
             currentUserData.Password = i['Password'];
             currentUserData.UserName = i['Username'];
-            currentUserData.location = i['Location'];
+            currentUserData.city = i['City'];
+            currentUserData.address = i['Address'];
 
             if(currentUserData.EmailID == 'thebugslayers007@gmail.com'){
               Navigator.push(context, MaterialPageRoute(

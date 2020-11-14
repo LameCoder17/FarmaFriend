@@ -35,7 +35,7 @@ class myProfileState extends State<myProfile> {
       key: _scaffoldKey,
       body: ListView(
         children: <Widget>[
-          Container(
+          Container( // This is for the back button
             color: Color(0xFF3CB371),
             child: Row(
               children: <Widget>[
@@ -64,7 +64,7 @@ class myProfileState extends State<myProfile> {
               ),
               child: Column(
                 children: <Widget>[
-                  Padding(  //The word Inventory on the rounded background
+                  Padding(  //The word Buy on the rounded background
                     padding: EdgeInsets.only(top: 30.00),
                     child: Text(
                       "My Profile",
@@ -86,21 +86,12 @@ class myProfileState extends State<myProfile> {
                   print(snapshot.data.value);
                   Map<dynamic, dynamic> values = snapshot.data.value;  //Map of the data received
                   List<dynamic> lists = [];
-
-
-
                   values.forEach((x,y) {
-                    if(x != 'Verified'){
-                      lists.add([x,y]);
-                    }
-                    else{
+                    if(x == 'Verified'){
                       verify = y;
                     }
+                    lists.add([x,y]);
                   });
-
-
-
-
                   return new ListView.builder(
                       shrinkWrap: true,
                       itemCount: lists.length,
@@ -117,10 +108,7 @@ class myProfileState extends State<myProfile> {
                                   child: ListTile(
                                     title: Text(lists[index][0], textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
                                     subtitle: Text(lists[index][1], textScaleFactor: 1,style: TextStyle(color: Colors.white),),
-                                    trailing: FlatButton(
-                                      child: Text("Change", style: TextStyle(color: Colors.white),),
-                                      onPressed: () => _displayDialog(context, lists[index][0]),
-                                    ),
+                                    trailing: changeButton(lists[index][0])
                                   )
                               ),
                             ],
@@ -143,11 +131,22 @@ class myProfileState extends State<myProfile> {
     );
   }
 
-  _displayDialog(BuildContext context, String text) async {
-    if(text == "Username"){
-      showSnackBar("Sorry but Username cannot be changed");
+  changeButton(String text){
+    if(text != "Username" && text != "Email" && text != "Verified"){
+      return FlatButton(
+        child: Text("Change", style: TextStyle(color: Colors.white),),
+        onPressed: () => _displayDialog(context, text),
+      );
     }
     else{
+      return Container(
+        height: 10.0,
+        width: 10.0,
+      );
+    }
+  }
+
+  _displayDialog(BuildContext context, String text) async {
       return showDialog(
           context: context,
           builder: (context) {
@@ -169,14 +168,15 @@ class myProfileState extends State<myProfile> {
                   onPressed: () {
                     if(control.text != 'Null'){
                       setState(() {
-                        if(text == 'Email'){
-                          currentUserData.EmailID = control.text;
-                        }
-                        else if(text == 'Location'){
-                          currentUserData.location = control.text;
+                        if(text == 'City'){
+                          currentUserData.city = control.text;
+                          currentUserData.city = currentUserData.city[0].toUpperCase() + currentUserData.city.substring(1).toLowerCase(); // To make everything user types as Jaipur
                         }
                         else if(text == 'Password'){
                           currentUserData.Password = control.text;
+                        }
+                        else if(text == 'Address'){
+                          currentUserData.address = control.text;
                         }
 
                         dbRefUser.child(currentUserData.UserName).set(
@@ -184,8 +184,9 @@ class myProfileState extends State<myProfile> {
                               'Email' : currentUserData.EmailID,
                               'Username' : currentUserData.UserName,
                               'Password' : currentUserData.Password,
-                              'Location' : currentUserData.location,
-                              'Verified' : verify
+                              'City' : currentUserData.city,
+                              'Verified' : verify,
+                              'Address' : currentUserData.address
                             }
                         );
                         showSnackBar("$text succcessfully changed");
@@ -201,7 +202,6 @@ class myProfileState extends State<myProfile> {
               ],
             );
           });
-    }
   }
 
   void showSnackBar(String message) { // For the snackbar

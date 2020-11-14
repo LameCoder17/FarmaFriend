@@ -12,7 +12,6 @@ class ResourcesState extends State<Resources> {
 
   ResourcesState();
   final dbRefResources = FirebaseDatabase.instance.reference().child("Resources");
-  //List<dynamic> lists = [];
   TextEditingController search = TextEditingController();
 
   @override
