@@ -1,4 +1,5 @@
 import 'package:farmafriend/resources.dart';
+import 'package:farmafriend/sell.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -114,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     print("Tapped");
                     Navigator.push(context, MaterialPageRoute(
                         builder: (BuildContext context){
-                          return buy();
+                          return Buy();
                         }
                     ));
                   },
@@ -137,6 +138,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onTap: (){
                     print("Tapped");
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (BuildContext context){
+                          return Sell();
+                        }
+                    ));
                   },
                 ),
 
@@ -194,11 +200,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ));
                     },
                   ),
-
                 ],
               )
           ),
-
         ],
       )
     )

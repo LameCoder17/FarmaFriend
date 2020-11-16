@@ -77,20 +77,14 @@ class AlreadyBoughtState extends State<AlreadyBought> {
             child: FutureBuilder(
               future: dbRefBuy.orderByChild("Buyer").equalTo(currentUserData.UserName).once(),
               builder: (context, AsyncSnapshot<DataSnapshot> snapshot){
-                //print("Hello");
-                print(snapshot.data.value);
-                print(currentUserData.UserName);
                 if(snapshot.hasData){
                   if(snapshot.data.value == null){
-                    print(currentUserData.UserName);
                     return Container(
                       height: heightScreen*0.3,
                       width: widthScreen,
                       child: Text("You have not Bought any items previously", style: TextStyle(fontSize: 20.00),textAlign: TextAlign.center,),
                     );
                   }
-                  print(snapshot.data.value);
-                  print(currentUserData.UserName);
                   Map<dynamic, dynamic> values = snapshot.data.value;  //Map of the data received
                   List<dynamic> lists = [];
                   values.forEach((x,y) {

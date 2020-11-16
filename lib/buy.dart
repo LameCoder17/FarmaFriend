@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:firebase_database/firebase_database.dart';
-
 import 'alreadyBought.dart';
 
-class buy extends StatefulWidget {
+class Buy extends StatefulWidget {
 
-  buy();
+  Buy();
   @override
-  buyState createState() => buyState();
+  BuyState createState() => BuyState();
 }
 
-class buyState extends State<buy> {
+class BuyState extends State<Buy> {
 
   final dbRefBuy = FirebaseDatabase.instance.reference().child("Inventory");
-  String searchfield;
+  String searchField;
   final GlobalKey<
       ScaffoldState> _scaffoldKey = new GlobalKey< //Mainly for snackbar
       ScaffoldState>();
@@ -110,10 +109,10 @@ class buyState extends State<buy> {
                     onPressed: (){
                       setState(() {
                         if(search.text == ""){
-                          searchfield = null;
+                          searchField = null;
                         }
                         else{
-                          searchfield = search.text;
+                          searchField = search.text;
                         }
                       });
                     },
@@ -138,8 +137,8 @@ class buyState extends State<buy> {
                       if(a == "Location" && b != currentUserData.city){
                         toPut = false;
                       }
-                      if(a == "Product" && searchfield != null){
-                        if(searchfield.toLowerCase() != b.toString().toLowerCase()){
+                      if(a == "Product" && searchField != null){
+                        if(searchField.toLowerCase() != b.toString().toLowerCase()){
                           toPut = false;
                         }
                       }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:farmafriend/admin/profile_admin.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:farmafriend/profile_noGoogle.dart';
 import 'package:farmafriend/signUp.dart';
@@ -218,7 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
       values.forEach((key, i){
         print(i["Email"]);
         print(i);
-        //items.add(i['Email']);
         if(i["Email"] == userName){
           if(i['Password'] == password){
             print("Access granted");
@@ -231,20 +229,12 @@ class _LoginScreenState extends State<LoginScreen> {
             currentUserData.city = i['City'];
             currentUserData.address = i['Address'];
 
-            if(currentUserData.EmailID == 'thebugslayers007@gmail.com'){
-              Navigator.push(context, MaterialPageRoute(
-                  builder: (BuildContext context){
-                    return ProfileScreenAdmin();
-                  }
-              ));
-            }
-            else{
               Navigator.push(context, MaterialPageRoute(
                   builder: (BuildContext context){
                     return ProfileScreenDirect();
                   }
               ));
-            }
+
           }
           else{
             showSnackBar("Incorrect password");
