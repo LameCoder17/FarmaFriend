@@ -239,6 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           currentUserData.Password = snapshot.value[account.displayName]['Password'];
           currentUserData.city = snapshot.value[account.displayName]['City'];
           currentUserData.address = snapshot.value[account.displayName]['Address'];
+          currentUserData.verified = snapshot.value[account.displayName]['Verified'];
         }
 
       });

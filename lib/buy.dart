@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'alreadyBought.dart';
+import 'package:flutter_mailer/flutter_mailer.dart';
 
 class Buy extends StatefulWidget {
 
@@ -32,7 +33,7 @@ class BuyState extends State<Buy> {
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.edit),
+        child: Icon(Icons.history),
         backgroundColor: Color(0xFF3CB371),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
@@ -147,6 +148,7 @@ class BuyState extends State<Buy> {
                       lists.add([x,temp]);
                     }
                   });
+                  print(lists);
                   return new ListView.builder(
                       shrinkWrap: true,
                       itemCount: lists.length,
@@ -161,12 +163,29 @@ class BuyState extends State<Buy> {
                               Padding(
                                   padding: EdgeInsets.only(top: 10.0),
                                   child: ListTile(
-                                    title: Text(lists[index][1][1] + "  " + lists[index][1][2], textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
-                                    subtitle: Text("Sold By ${lists[index][1][4]} at Rs ${lists[index][1][5]}", textScaleFactor: 1,style: TextStyle(color: Colors.white),),
+                                    title: Text(lists[index][1][3] + "  " + lists[index][1][4], textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
+                                    subtitle: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: "Sold By ${lists[index][1][6]} "
+                                          ),
+                                          WidgetSpan(
+                                            child: Padding(
+                                              padding: EdgeInsets.only(left: 1.0),
+                                              child: tickOrNot(lists[index][1][1]),
+                                            )
+                                          ),
+                                          TextSpan(
+                                            text: "at Rs ${lists[index][1][7]}"
+                                          )
+                                        ]
+                                      ),
+                                    ),
                                     trailing: FlatButton(
                                       child: Text("Buy", textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
                                       onPressed: (){
-
+                                        _displayDialog(context, lists[index]);
                                       },
                                     ),
                                   )
@@ -183,7 +202,6 @@ class BuyState extends State<Buy> {
                     width: widthScreen*0.4,
                     child: CircularProgressIndicator(),
                   );
-
                 }
               },
             ),
@@ -191,5 +209,93 @@ class BuyState extends State<Buy> {
         ],
       ),
     );
+  }
+
+  tickOrNot(String name){
+   if(name == 'Yes'){
+     return Padding(
+       padding: EdgeInsets.only(right: 2.0),
+       child: Icon(Icons.check_circle_outline, size: 16.0, color: Colors.white,),
+     );
+   }
+  }
+
+  _displayDialog(BuildContext context, List item) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Buy Item'),
+            content: Text('Are you sure you want buy this item ?'),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              new FlatButton(
+                child: new Text('Yes'),
+                onPressed: () async {
+                  buyItem(item);
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Future<void> buyItem(List items) async {
+    String email = items[1][2];
+    //print('x = ${items[1][6]}');
+    int cost = items[1][7];
+    String product = items[1][3];
+    String quantity = items[1][4];
+    String seller = items[1][6];
+    String verified = items[1][1];
+    String itemNumber = items[0];
+    if (seller == currentUserData.UserName) {
+      showSnackBar("You cannot purchase your own item");
+    }
+    else
+      {
+      final MailOptions mailOptions = MailOptions(
+        body: 'Hello $seller, I am ${currentUserData
+            .UserName}. I have bought $product from you and would like you to deliver $quantity of it '
+            'to ${currentUserData.address} for $cost. Thank You',
+        subject: 'Product Bought',
+        recipients: [email],
+        isHTML: true,
+        ccRecipients: ['thebugslayers007@gmail.com'],
+      );
+
+    final MailerResponse response = await FlutterMailer.send(mailOptions);
+    print(response);
+    setState(() {
+      dbRefBuy.child("$itemNumber").update(
+          {
+            'Buyer': currentUserData.UserName,
+            'Status': 'Sold',
+            'Cost': cost,
+            'Product': product,
+            'Quantity': quantity,
+            'Seller': seller,
+            'Verified': verified,
+            'Location': currentUserData.city,
+            'Email': email
+          }
+      );
+      showSnackBar("Item has been successfully bought");
+    });
+  }
+  }
+
+  void showSnackBar(String message) { // For the snackbar
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 1),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

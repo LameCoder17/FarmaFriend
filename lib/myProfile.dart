@@ -15,7 +15,6 @@ class myProfileState extends State<myProfile> {
   myProfileState();
   final dbRefUser = FirebaseDatabase.instance.reference().child("Users");
   TextEditingController control = TextEditingController();
-  String verify;
   final GlobalKey<
       ScaffoldState> _scaffoldKey = new GlobalKey< //Mainly for snackbar
       ScaffoldState>();
@@ -87,9 +86,6 @@ class myProfileState extends State<myProfile> {
                   Map<dynamic, dynamic> values = snapshot.data.value;  //Map of the data received
                   List<dynamic> lists = [];
                   values.forEach((x,y) {
-                    if(x == 'Verified'){
-                      verify = y;
-                    }
                     lists.add([x,y]);
                   });
                   return new ListView.builder(
@@ -185,7 +181,7 @@ class myProfileState extends State<myProfile> {
                               'Username' : currentUserData.UserName,
                               'Password' : currentUserData.Password,
                               'City' : currentUserData.city,
-                              'Verified' : verify,
+                              'Verified' : currentUserData.verified,
                               'Address' : currentUserData.address
                             }
                         );

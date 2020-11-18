@@ -228,6 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
             currentUserData.UserName = i['Username'];
             currentUserData.city = i['City'];
             currentUserData.address = i['Address'];
+            currentUserData.verified = i['Verified'];
 
               Navigator.push(context, MaterialPageRoute(
                   builder: (BuildContext context){

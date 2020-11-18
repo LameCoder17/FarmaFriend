@@ -4,5 +4,6 @@ class currentUserData{
   static String UserName;
   static String city;
   static String address;
+  static String verified;
 }
 

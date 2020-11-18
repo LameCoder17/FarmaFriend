@@ -1,3 +1,4 @@
+import 'package:farmafriend/alreadySold.dart';
 import 'package:flutter/material.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -36,7 +37,11 @@ class SellState extends State<Sell> {
         backgroundColor: Color(0xFF3CB371),
         child: Icon(Icons.history),
         onPressed: () {
-
+          Navigator.push(context, MaterialPageRoute(
+              builder: (BuildContext context){
+                return AlreadySold();
+              }
+          ));
         },
       ),
       body: ListView(
@@ -282,7 +287,9 @@ class SellState extends State<Sell> {
             'Product' : product,
             'Quantity' : quantity,
             'Seller' : currentUserData.UserName,
-            'Status' : 'Pending'
+            'Status' : 'Pending',
+            'Verified' : currentUserData.verified,
+            'Email' : currentUserData.EmailID
           }
       );
     });
