@@ -208,31 +208,33 @@ class _SignUpState extends State<SignUp> {
                         child: Text('Submit', style: TextStyle(color: Colors.white),),
                         color: Color(0xFF3CB371),
                         onPressed: (){
-                          final dbRefUser = FirebaseDatabase.instance.reference().child("User");
-                          dbRefUser.once().then((DataSnapshot snapshot) {
-                            print('Data : ${snapshot.value}');
-                            print(snapshot.value.toString().contains(emailIdController.text));
-                            if(!snapshot.value.toString().contains(emailIdController.text)){
-                              dbRefUser.child("${userNameController.text}").set(
-                                  {
-                                    'Email' : emailIdController.text,
-                                    'Password' : passwordController.text,
-                                    'Username' : userNameController.text,
-                                    'Address' : addressController.text,
-                                    'City' : cityController.text,
-                                    'Verified' : 'No'
-                                  }
-                              );
-                              showSnackBar('Account Created !');
+                          if(_formKey.currentState.validate()){
+                            final dbRefUser = FirebaseDatabase.instance.reference().child("Users");
+                            dbRefUser.once().then((DataSnapshot snapshot) {
+                              print('Data : ${snapshot.value}');
+                              print(snapshot.value.toString().contains(emailIdController.text));
+                              if(!snapshot.value.toString().contains(emailIdController.text)){
+                                dbRefUser.child("${userNameController.text}").set(
+                                    {
+                                      'Email' : emailIdController.text,
+                                      'Password' : passwordController.text,
+                                      'Username' : userNameController.text,
+                                      'Address' : addressController.text,
+                                      'City' : cityController.text,
+                                      'Verified' : 'No'
+                                    }
+                                );
+                                showSnackBar('Account Created !');
+                              }
+                              else{
+                                showSnackBar('Account with the same email ID exists');
+                              }
+                              Timer(Duration(seconds: 3), () {
+                                Navigator.pop(context);
+                              });
                             }
-                            else{
-                              showSnackBar('Account with the same email ID exists');
-                            }
-                            Timer(Duration(seconds: 3), () {
-                              Navigator.pop(context);
-                            });
+                            );
                           }
-                          );
                         },
                       )
                     ],

@@ -108,8 +108,8 @@ class AlreadySoldState extends State<AlreadySold> {
                               Padding(
                                   padding: EdgeInsets.only(top: 10.0),
                                   child: ListTile(
-                                    title: Text(lists[index][1][1] + "  " + lists[index][1][2], textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
-                                    subtitle: Text("Sold By ${lists[index][1][4]} at Rs ${lists[index][1][5]}", textScaleFactor: 1,style: TextStyle(color: Colors.white),),
+                                    title: Text(lists[index][1][3] + "  " + lists[index][1][4], textScaleFactor: 1.1,style: TextStyle(color: Colors.white),),
+                                    subtitle: Text("Sold By ${lists[index][1][6]} at Rs ${lists[index][1][7]}", textScaleFactor: 1,style: TextStyle(color: Colors.white),),
                                   )
                               ),
                             ],
@@ -124,14 +124,12 @@ class AlreadySoldState extends State<AlreadySold> {
                     width: widthScreen*0.4,
                     child: CircularProgressIndicator(),
                   );
-
                 }
               },
             ),
           )
         ],
       ),
-
     );
   }
 }

@@ -21,6 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   GoogleSignInAuthentication auth;
   bool gotProfile = false;
   final dbRefUser = FirebaseDatabase.instance.reference().child("Users");
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -32,7 +33,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double widthScreen = MediaQuery.of(context).size.width;
     double heightScreen = MediaQuery.of(context).size.height;
-    final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
     return gotProfile
         ? Scaffold(
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: FlatButton(
                     child: Text('Log Out', style: TextStyle(color: Colors.white),),
                     onPressed: (){
-                      print('LOg oUt');
+                      print('Log out');
                       _displayDialog(context);
                     },
                   )
@@ -113,11 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onTap: (){
                     print("Tapped");
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (BuildContext context){
-                          return Buy();
-                        }
-                    ));
+                    goto(Buy());
                   },
                 ),
                 Container(
@@ -138,11 +134,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   onTap: (){
                     print("Tapped");
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (BuildContext context){
-                          return Sell();
-                        }
-                    ));
+                    goto(Sell());
                   },
                 ),
 
@@ -168,11 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     onTap: (){
                       print("Tapped");
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (BuildContext context){
-                            return Resources();
-                          }
-                      ));
+                      goto(Resources());
                     },
                   ),
                   Container(
@@ -246,6 +234,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  void goto(var page){
+    if(currentUserData.city == 'Null'){
+      showSnackBar('Please go to My Profile and set city');
+    }
+    else if(currentUserData.address == 'Null'){
+      showSnackBar('Please go to My Profile and set address');
+    }
+    else{
+      Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context){
+            return page;
+          }
+      ));
+    }
+  }
+
   _displayDialog(BuildContext context) async {
     return showDialog(
         context: context,
@@ -270,5 +274,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           );
         });
+  }
+  void showSnackBar(String message) { // For the snackbar
+    final snackBar = SnackBar(
+      content: Text(message),
+      duration: Duration(seconds: 1),
+    );
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 }

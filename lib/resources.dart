@@ -89,13 +89,6 @@ class ResourcesState extends State<Resources> {
                         lists.add(element);
                       });
                       lists.remove(null);
-
-                      //print(lists);
-                      /*
-                      values.forEach((key, values) {
-                        lists.add([key,values]); // Taking important stuff and converting to list (May change it to use Map by default to save time)
-                      });
-                      */
                       print(lists);
                       return new ListView.builder(
                           shrinkWrap: true,

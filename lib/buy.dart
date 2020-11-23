@@ -248,7 +248,6 @@ class BuyState extends State<Buy> {
 
   Future<void> buyItem(List items) async {
     String email = items[1][2];
-    //print('x = ${items[1][6]}');
     int cost = items[1][7];
     String product = items[1][3];
     String quantity = items[1][4];

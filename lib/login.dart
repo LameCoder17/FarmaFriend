@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: size.height*0.75,
                     width: size.width,
                     decoration: BoxDecoration(
-                        color: Color(0xFF536DFE),
+                        color: Color(0xFF3CB371),
                         borderRadius: BorderRadius.only(
                             bottomRight: Radius.circular(80.00),
                             bottomLeft: Radius.circular(80.00)
@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: () {
                 startSignIn();
               },
-              color: Color(0xFF536DFE),
+              color: Color(0xFF3CB371),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16.0)
               ),
