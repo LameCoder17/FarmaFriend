@@ -128,18 +128,18 @@ class BuyState extends State<Buy> {
               builder: (context, AsyncSnapshot<DataSnapshot> snapshot){
                 if(snapshot.hasData){
                   //print(snapshot.data.value);
-                  bool toPut = true;
                   Map<dynamic, dynamic> values = snapshot.data.value;  //Map of the data received
                   List<dynamic> lists = [];
                   values.forEach((x,y) {
                     List<dynamic> temp = [];
+                    bool toPut = true;
                     y.forEach((a,b){
                       temp.add(b);
                       if(a == "Location" && b != currentUserData.city){
                         toPut = false;
                       }
                       if(a == "Product" && searchField != null){
-                        if(searchField.toLowerCase() != b.toString().toLowerCase()){
+                        if(!b.toLowerCase().contains(searchField.toLowerCase())){  // searchField.toLowerCase() != b.toString().toLowerCase()  !b.toLowerCase().contains(searchField.toLowerCase())
                           toPut = false;
                         }
                       }
@@ -168,7 +168,7 @@ class BuyState extends State<Buy> {
                                       text: TextSpan(
                                         children: [
                                           TextSpan(
-                                            text: "Sold By ${lists[index][1][6]} "
+                                            text: "By ${lists[index][1][6]} "
                                           ),
                                           WidgetSpan(
                                             child: Padding(
@@ -248,7 +248,7 @@ class BuyState extends State<Buy> {
 
   Future<void> buyItem(List items) async {
     String email = items[1][2];
-    int cost = items[1][7];
+    var cost = items[1][7];
     String product = items[1][3];
     String quantity = items[1][4];
     String seller = items[1][6];

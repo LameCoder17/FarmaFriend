@@ -2,6 +2,7 @@ import 'package:farmafriend/alreadySold.dart';
 import 'package:flutter/material.dart';
 import 'package:farmafriend/currentUserProfileData.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 class Sell extends StatefulWidget {
 
@@ -13,6 +14,7 @@ class Sell extends StatefulWidget {
 class SellState extends State<Sell> {
 
   final dbRefBuy = FirebaseDatabase.instance.reference().child("Inventory");
+  final dbRefProduct = FirebaseDatabase.instance.reference().child("Products");
   final GlobalKey<
       ScaffoldState> _scaffoldKey = new GlobalKey< //Mainly for snackbar
       ScaffoldState>();
@@ -20,6 +22,11 @@ class SellState extends State<Sell> {
   TextEditingController product = TextEditingController();
   TextEditingController quantity = TextEditingController();
   var _formKey = GlobalKey<FormState>();
+  final List<DropdownMenuItem> items = [];
+  String productName;
+  double costOfProduct;
+  double quantityOfProduct;
+  double totalCost;
 
   @override
   Widget build(BuildContext context) {
@@ -100,40 +107,49 @@ class SellState extends State<Sell> {
                       "Product", textAlign: TextAlign.left, style: TextStyle(fontSize: 18.0),
                     ),
                   ),
-                  SizedBox(
-                    width: widthScreen*0.8,
-                    child: TextFormField(
-                      keyboardType: TextInputType.text,
-                      controller: product,
-                      validator: (String value){
-                        if(value.isEmpty){
-                          return 'Enter Product Name';
-                        }
-                        else{
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Product',
+                  Padding(
+                      padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                      child: FutureBuilder(
+                        future: dbRefProduct.once(),
+                        builder: (
+                            BuildContext context,
+                            AsyncSnapshot<DataSnapshot> snapshot) {
+                          if(snapshot.hasData){
+                            // print('Data : ${snapshot.data.value}');
+                            items.clear();
+                            Map<dynamic, dynamic> values = snapshot.data.value;
+                            values.forEach((key, values) {
+                              items.add(
+                                  DropdownMenuItem(
+                                    child: Text(key.toString()),
+                                    value: key,
+                                  )
+                              );
+                            });
+                            return SearchableDropdown.single(
+                              items: items,
+                              value: productName,
+                              hint: "Select One",
+                              searchHint: "Select One",
 
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0
-                              )
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(10.0)
-                          ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))
-                      ),
-                    ),
+                              onChanged: (value) {
+                                setState(() {
+                                  productName = value;
+                                  costOfProduct = values[value];
+                                  print(value);
+                                });
+                              },
+                              isCaseSensitiveSearch: false,
+                              isExpanded: true,
+                            );
+                          }
+                          return Container(
+                            height: heightScreen*0.2,
+                            width: widthScreen*0.4,
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      )
                   ),
                   Container(
                     height: 30.0,
@@ -141,17 +157,29 @@ class SellState extends State<Sell> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 10.0),
                     child: Text(
-                      "Quantity (with Units)", textAlign: TextAlign.left, style: TextStyle(fontSize: 18.0),
+                      "Quantity (in KG)", textAlign: TextAlign.left, style: TextStyle(fontSize: 18.0),
                     ),
                   ),
                   SizedBox(
                     width: widthScreen*0.8,
                     child: TextFormField(
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       controller: quantity,
+                      onChanged: (val){
+                        setState(() {
+                          print(quantity.text);
+                          if(quantity.text != ""){
+                            quantityOfProduct = double.parse(quantity.text);
+                          }
+                          else{
+                            quantityOfProduct = 0.0;
+                            print('NULL');
+                          }
+                        });
+                      },
                       validator: (String value){
                         if(value.isEmpty){
-                          return 'Enter Quantity (with units)';
+                          return 'Enter Quantity (in KG)';
                         }
                         else{
                           return null;
@@ -188,38 +216,18 @@ class SellState extends State<Sell> {
                     ),
                   ),
                   SizedBox(
-                    width: widthScreen*0.8,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: cost,
-                      validator: (String value){
-                        if(value.isEmpty){
-                          return 'Enter Cost in Rupees';
-                        }
-                        else{
-                          return null;
-                        }
-                      },
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: 'Cost',
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0
-                              )
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Colors.white,
-                              ),
-                              borderRadius: BorderRadius.circular(10.0)
-                          ),
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10.0))
-                      ),
-                    ),
+                    width: widthScreen*0.75,
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          'Rs '
+                        ),
+                        SizedBox(
+                          width: widthScreen*0.4,
+                          child: findingCostOfTheProduct(),  // To get total cost
+                        ),
+                      ],
+                    )
                   ),
                   Container(
                     height: 30.0,
@@ -274,18 +282,23 @@ class SellState extends State<Sell> {
       print(snapshot.value);
       Map<dynamic, dynamic> values = snapshot.value;
       int temp = 0;
-      values.forEach((key, value) {
-        if(temp < int.parse(key.toString().split(" ")[1])){
-          temp = int.parse(key.toString().split(" ")[1]);
-        }
-      });
+      try{
+        values.forEach((key, value) {
+          if(temp < int.parse(key.toString().split(" ")[1])){
+            temp = int.parse(key.toString().split(" ")[1]);
+          }
+        });
+      }
+      catch(e){
+
+      }
       dbRefBuy.child("Item ${temp+1}").set(
           {
             'Buyer' : 'Null',
-            'Cost' : int.parse(cost),
+            'Cost' : totalCost,
             'Location': currentUserData.city,
-            'Product' : product,
-            'Quantity' : quantity,
+            'Product' : productName,
+            'Quantity' : '$quantityOfProduct KG',
             'Seller' : currentUserData.UserName,
             'Status' : 'Pending',
             'Verified' : currentUserData.verified,
@@ -302,5 +315,17 @@ class SellState extends State<Sell> {
       duration: Duration(seconds: 1),
     );
     _scaffoldKey.currentState.showSnackBar(snackBar);
+  }
+
+
+  findingCostOfTheProduct(){
+    print(quantity.text);
+    try{
+      totalCost = costOfProduct*quantityOfProduct;
+      return Text('$totalCost');
+    }
+    catch(e){
+      return Text('0');
+    }
   }
 }
