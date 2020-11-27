@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 20.0, left: size.width*0.3, right: size.width*0.3),
+            padding: EdgeInsets.only(top: 20.0, left: size.width*0.2, right: size.width*0.2),
             child: RaisedButton(
               onPressed: () {
                 startSignIn();

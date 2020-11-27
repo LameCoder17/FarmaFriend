@@ -68,8 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 30.00),
                   child: Container(
-                    height: 150,
-                    width: 150,
+                    height: widthScreen*0.35,
+                    width: widthScreen*0.35,
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
